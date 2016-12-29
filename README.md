@@ -1,3 +1,3 @@
 # PyAIMP
 
-[AIMP](http://www.aimp.ru/) remote API wrapper for Python.
+Python [AIMP](http://www.aimp.ru/) remote API wrapper.
