@@ -120,31 +120,31 @@ class Client:
         return self._set_prop(AIMP_RA_PROPERTY_VOLUME, volume)
 
     def is_muted(self):
-        return self._get_prop(AIMP_RA_PROPERTY_MUTE) # TODO return boolean
+        return bool(self._get_prop(AIMP_RA_PROPERTY_MUTE))
 
     def set_muted(self, muted):
-        return self._set_prop(AIMP_RA_PROPERTY_MUTE, muted) # TODO boolean to int conversion
+        return self._set_prop(AIMP_RA_PROPERTY_MUTE, int(muted))
 
     def is_track_repeated(self):
-        return self._get_prop(AIMP_RA_PROPERTY_TRACK_REPEAT) # TODO return boolean
+        return bool(self._get_prop(AIMP_RA_PROPERTY_TRACK_REPEAT))
 
     def set_track_repeated(self, repeat):
-        return self._set_prop(AIMP_RA_PROPERTY_TRACK_REPEAT, repeat) # TODO boolean to int conversion
+        return self._set_prop(AIMP_RA_PROPERTY_TRACK_REPEAT, int(repeat))
 
     def is_shuffled(self):
-        return self._get_prop(AIMP_RA_PROPERTY_TRACK_SHUFFLE) # TODO return boolean
+        return bool(self._get_prop(AIMP_RA_PROPERTY_TRACK_SHUFFLE))
 
     def set_shuffled(self, shuffled):
-        return self._set_prop(AIMP_RA_PROPERTY_TRACK_SHUFFLE, shuffled) # TODO boolean to int conversion
+        return self._set_prop(AIMP_RA_PROPERTY_TRACK_SHUFFLE, int(shuffled))
 
     def is_recording(self):
-        return self._get_prop(AIMP_RA_PROPERTY_RADIOCAP) # TODO return boolean
+        return bool(self._get_prop(AIMP_RA_PROPERTY_RADIOCAP))
 
     def set_recording(self, recording):
-        return self._set_prop(AIMP_RA_PROPERTY_RADIOCAP, recording) # TODO boolean to int conversion
+        return self._set_prop(AIMP_RA_PROPERTY_RADIOCAP, int(recording))
 
     def is_visualization_fullscreen(self):
-        return self._get_prop(AIMP_RA_PROPERTY_VISUAL_FULLSCREEN) # TODO return boolean
+        return bool(self._get_prop(AIMP_RA_PROPERTY_VISUAL_FULLSCREEN))
 
     def set_visualization_fullscreen(self, visualization_fullscreen):
-        return self._set_prop(AIMP_RA_PROPERTY_VISUAL_FULLSCREEN, visualization_fullscreen) # TODO boolean to int conversion
+        return self._set_prop(AIMP_RA_PROPERTY_VISUAL_FULLSCREEN, int(visualization_fullscreen))
