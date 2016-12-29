@@ -1,16 +1,21 @@
 from enum import Enum
 import win32gui
 import win32api
-import win32con
+from win32con import WM_USER
 
 __version__ = '0.1.0'
+
+__all__ = [
+    'PlayerState',
+    'Client'
+]
 
 # -----------------------------------------------------
 # Message types to send to AIMP
 
-WM_AIMP_COMMAND = win32con.WM_USER + 0x75
-WM_AIMP_NOTIFY = win32con.WM_USER + 0x76
-WM_AIMP_PROPERTY = win32con.WM_USER + 0x77
+WM_AIMP_COMMAND = WM_USER + 0x75
+WM_AIMP_NOTIFY = WM_USER + 0x76
+WM_AIMP_PROPERTY = WM_USER + 0x77
 
 # -----------------------------------------------------
 # Properties
@@ -73,7 +78,6 @@ class PlayerState(Enum):
     Paused = 1
     Playing = 2
 
-# -----------------------------------------------------
 
 class Client:
     hwnd = None
@@ -148,3 +152,8 @@ class Client:
 
     def set_visualization_fullscreen(self, visualization_fullscreen):
         return self._set_prop(AIMP_RA_PROPERTY_VISUAL_FULLSCREEN, int(visualization_fullscreen))
+
+    # -----------------------------------------------------
+    # Commands
+
+    
