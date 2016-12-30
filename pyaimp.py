@@ -87,22 +87,20 @@ class PlayerState(Enum):
 
 
 class Client:
-    hwnd = None
-
     def __init__(self):
-        self.hwnd = win32gui.FindWindow(AIMPRemoteAccessClass, None)
+        self._hwnd = win32gui.FindWindow(AIMPRemoteAccessClass, None)
 
-        if not self.hwnd:
+        if not self._hwnd:
             raise RuntimeError('Unable to find the AIMP instance. Are you sure it is running?')
 
     def _get_prop(self, prop_id):
-        return win32api.SendMessage(self.hwnd, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_GET, 0)
+        return win32api.SendMessage(self._hwnd, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_GET, 0)
 
     def _set_prop(self, prop_id, value):
-        win32api.SendMessage(self.hwnd, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_SET, value)
+        win32api.SendMessage(self._hwnd, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_SET, value)
 
     def _send_command(self, command_id, parameter=None):
-        return win32api.SendMessage(self.hwnd, WM_AIMP_COMMAND, command_id, parameter)
+        return win32api.SendMessage(self._hwnd, WM_AIMP_COMMAND, command_id, parameter)
 
     def get_current_track_infos(self):
         mapped_file = mmapfile(None, AIMPRemoteAccessClass, MaximumSize=AIMPRemoteAccessMapFileSize)
@@ -111,7 +109,26 @@ class Client:
 
         mapped_file.close()
 
-        print(struct.unpack('I ? I I I I I I I I I I I I I I', mapped_file_content))
+        remote_file_info = [
+            'Deprecated1',
+            'Active',
+            'BitRate',
+            'Channels',
+            'Duration',
+            'FileSize',
+            'FileMark',
+            'SampleRate',
+            'TrackNumber',
+            'AlbumLength',
+            'ArtistLength',
+            'DateLength',
+            'FileNameLength',
+            'GenreLength',
+            'TitleLength',
+            'Deprecated2'
+        ]
+
+        return dict(zip(remote_file_info, struct.unpack('I ? I I I Q I I I I I I I I I 6I', mapped_file_content[:92])))
 
     # -----------------------------------------------------
     # Properties
