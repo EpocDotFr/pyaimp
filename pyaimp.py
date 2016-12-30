@@ -129,6 +129,7 @@ class Client:
             'TitleLength'
         ]
 
+        # TODO Better use ctypes?
         meta_data_unpacked = dict(zip(meta_data_to_unpack, struct.unpack(pack_format, meta_data)))
 
         track_data = mapped_file.readline().decode().replace('\x00', '')
