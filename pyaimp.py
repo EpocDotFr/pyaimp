@@ -1,9 +1,10 @@
-from enum import Enum
-from win32con import WM_USER
 from mmapfile import mmapfile
+from win32con import WM_USER
+from enum import Enum
+from io import StringIO
+import struct
 import win32gui
 import win32api
-import struct
 
 __version__ = '0.1.0'
 
@@ -44,10 +45,10 @@ AIMP_RA_PROPERTY_VISUAL_FULLSCREEN = 0xA0
 
 AIMP_RA_CMD_BASE = 10
 
+WM_AIMP_COPYDATA_ALBUMART_ID = 0x41495043
+
 AIMP_RA_CMD_REGISTER_NOTIFY = AIMP_RA_CMD_BASE + 1
 AIMP_RA_CMD_UNREGISTER_NOTIFY = AIMP_RA_CMD_BASE + 2
-
-WM_AIMP_COPYDATA_ALBUMART_ID = 0x41495043
 
 AIMP_RA_CMD_PLAY = AIMP_RA_CMD_BASE + 3
 AIMP_RA_CMD_PLAYPAUSE = AIMP_RA_CMD_BASE + 4
@@ -105,11 +106,11 @@ class Client:
     def get_current_track_infos(self):
         mapped_file = mmapfile(None, AIMPRemoteAccessClass, MaximumSize=AIMPRemoteAccessMapFileSize)
 
-        mapped_file_content = mapped_file.read(AIMPRemoteAccessMapFileSize)
+        pack_format = 'L ? L L L l L L L L L L L L L 6I'
 
-        mapped_file.close()
+        meta_data = mapped_file.read(struct.calcsize(pack_format))
 
-        remote_file_info = [
+        meta_data_to_unpack = [
             'Deprecated1',
             'Active',
             'BitRate',
@@ -117,18 +118,42 @@ class Client:
             'Duration',
             'FileSize',
             'FileMark',
-            'SampleRate',
             'TrackNumber',
+            'SampleRate',
             'AlbumLength',
+            'Deprecated2',
             'ArtistLength',
             'DateLength',
             'FileNameLength',
             'GenreLength',
-            'TitleLength',
-            'Deprecated2'
+            'TitleLength'
         ]
 
-        return dict(zip(remote_file_info, struct.unpack('I ? I I I Q I I I I I I I I I 6I', mapped_file_content[:92])))
+        meta_data_unpacked = dict(zip(meta_data_to_unpack, struct.unpack(pack_format, meta_data)))
+
+        track_data = mapped_file.readline().decode().replace('\x00', '')
+
+        mapped_file.close()
+
+        ret = {
+            'bit_rate': meta_data_unpacked['BitRate'],
+            'channels': meta_data_unpacked['Channels'],
+            'duration': meta_data_unpacked['Duration'],
+            'file_size': meta_data_unpacked['FileSize'],
+            'file_mark': meta_data_unpacked['FileMark'],
+            'track_number': meta_data_unpacked['TrackNumber'],
+            'sample_rate': meta_data_unpacked['SampleRate']
+        }
+
+        with StringIO(track_data) as s:
+            ret['album'] = s.read(meta_data_unpacked['AlbumLength'])
+            ret['artist'] = s.read(meta_data_unpacked['ArtistLength'])
+            ret['year'] = s.read(meta_data_unpacked['DateLength'])
+            ret['filename'] = s.read(meta_data_unpacked['FileNameLength'])
+            ret['genre'] = s.read(meta_data_unpacked['GenreLength'])
+            ret['title'] = s.read(meta_data_unpacked['TitleLength'])
+
+        return ret
 
     # -----------------------------------------------------
     # Properties
