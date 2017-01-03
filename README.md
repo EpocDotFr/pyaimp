@@ -8,7 +8,7 @@ PyAIMP comes as a simple Python module that covers 100% of the AIMP SDK features
 
 ## Documentation
 
-Everything you need to know is located [here](todo).
+Everything you need to know is located [here](https://pythonhosted.org/pyaimp/).
 
 ## Changelog
 

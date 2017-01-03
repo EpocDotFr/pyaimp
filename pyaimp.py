@@ -1,10 +1,11 @@
 from mmapfile import mmapfile
-from win32con import WM_USER
 from enum import Enum
 from io import StringIO
 import struct
+import threading
 import win32gui
 import win32api
+import win32con
 
 __version__ = '0.1.0'
 
@@ -19,9 +20,9 @@ AIMPRemoteAccessMapFileSize = 2048
 # -----------------------------------------------------
 # Message types to send to AIMP
 
-WM_AIMP_COMMAND = WM_USER + 0x75
-WM_AIMP_NOTIFY = WM_USER + 0x76
-WM_AIMP_PROPERTY = WM_USER + 0x77
+WM_AIMP_COMMAND = win32con.WM_USER + 0x75
+WM_AIMP_NOTIFY = win32con.WM_USER + 0x76
+WM_AIMP_PROPERTY = win32con.WM_USER + 0x77
 
 # -----------------------------------------------------
 # Properties
@@ -89,19 +90,54 @@ class PlayerState(Enum):
 
 class Client:
     def __init__(self):
-        self._hwnd = win32gui.FindWindow(AIMPRemoteAccessClass, None)
+        self._get_aimp_hwnd()
 
-        if not self._hwnd:
+    def _get_aimp_hwnd(self):
+        self._aimp_hwnd = win32gui.FindWindow(AIMPRemoteAccessClass, None)
+
+        if not self._aimp_hwnd:
             raise RuntimeError('Unable to find the AIMP instance. Are you sure it is running?')
 
+    def _handle_wm_copydata(self, hwnd, msg, wparam, lparam):
+        print(hwnd)
+        print(msg)
+        print(wparam)
+        print(lparam)
+
+    def _create_internal_hwnd(self):
+        wc = win32gui.WNDCLASS()
+        wc.lpszClassName = 'pyaimp'
+        wc.lpfnWndProc = {
+            win32con.WM_COPYDATA: self._handle_wm_copydata
+        }
+
+        hinstance = wc.hInstance = win32api.GetModuleHandle(None)
+        class_name = win32gui.RegisterClass(wc)
+
+        self._internal_hwnd = win32gui.CreateWindow(
+            class_name,
+            'PyAIMP ' + __version__,
+            0,
+            0, 
+            0,
+            win32con.CW_USEDEFAULT, 
+            win32con.CW_USEDEFAULT,
+            0, 
+            0,
+            hinstance, 
+            None
+        )
+
+        win32gui.PumpMessages()
+
     def _get_prop(self, prop_id):
-        return win32api.SendMessage(self._hwnd, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_GET, 0)
+        return win32api.SendMessage(self._aimp_hwnd, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_GET, 0)
 
     def _set_prop(self, prop_id, value):
-        win32api.SendMessage(self._hwnd, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_SET, value)
+        win32api.SendMessage(self._aimp_hwnd, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_SET, value)
 
     def _send_command(self, command_id, parameter=None):
-        return win32api.SendMessage(self._hwnd, WM_AIMP_COMMAND, command_id, parameter)
+        return win32api.SendMessage(self._aimp_hwnd, WM_AIMP_COMMAND, command_id, parameter)
 
     def get_current_track_infos(self):
         mapped_file = mmapfile(None, AIMPRemoteAccessClass, MaximumSize=AIMPRemoteAccessMapFileSize)
@@ -267,9 +303,11 @@ class Client:
         self._send_command(AIMP_RA_CMD_OPEN_PLAYLISTS)
 
     def get_album_image(self):
-        album_art = self._send_command(AIMP_RA_CMD_GET_ALBUMART)
+        threading.Thread(target=self._create_internal_hwnd).start()
 
-        if not album_art:
+        res = self._send_command(AIMP_RA_CMD_GET_ALBUMART, self._internal_hwnd) # FIXME It runs before the thread even start
+
+        if not res:
             return None
 
         # TODO
