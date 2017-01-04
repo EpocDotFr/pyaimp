@@ -1,5 +1,6 @@
 from mmapfile import mmapfile
 from enum import Enum
+from collections import OrderedDict
 import struct
 import threading
 import win32gui
@@ -19,6 +20,25 @@ __all__ = [
 
 AIMPRemoteAccessClass = 'AIMP2_RemoteInfo'
 AIMPRemoteAccessMapFileSize = 2048
+
+AIMPRemoteAccessFormat = OrderedDict([
+    ('Deprecated1', 'L'),
+    ('Active', '?'),
+    ('BitRate', 'L'),
+    ('Channels', 'L'),
+    ('Duration', 'L'),
+    ('FileSize', 'l'),
+    ('FileMark', 'L'),
+    ('TrackNumber', 'L'),
+    ('SampleRate', 'L'),
+    ('AlbumLength', 'L'),
+    ('Deprecated2', '6I'),
+    ('ArtistLength', 'L'),
+    ('DateLength', 'L'),
+    ('FileNameLength', 'L'),
+    ('GenreLength', 'L'),
+    ('TitleLength', 'L')
+])
 
 # -----------------------------------------------------
 # Message types to send to AIMP
@@ -170,31 +190,11 @@ class Client:
     def get_current_track_infos(self):
         mapped_file = mmapfile(None, AIMPRemoteAccessClass, MaximumSize=AIMPRemoteAccessMapFileSize)
 
-        pack_format = 'L ? L L L l L L L L L L L L L 6I'
+        pack_format = ''.join(AIMPRemoteAccessFormat.values())
 
-        meta_data = mapped_file.read(struct.calcsize(pack_format))
+        meta_data_raw = mapped_file.read(struct.calcsize(pack_format))
 
-        meta_data_to_unpack = [
-            'Deprecated1',
-            'Active',
-            'BitRate',
-            'Channels',
-            'Duration',
-            'FileSize',
-            'FileMark',
-            'TrackNumber',
-            'SampleRate',
-            'AlbumLength',
-            'Deprecated2',
-            'ArtistLength',
-            'DateLength',
-            'FileNameLength',
-            'GenreLength',
-            'TitleLength'
-        ]
-
-        # TODO Better use ctypes?
-        meta_data_unpacked = dict(zip(meta_data_to_unpack, struct.unpack(pack_format, meta_data)))
+        meta_data_unpacked = dict(zip(AIMPRemoteAccessFormat.keys(), struct.unpack(pack_format, meta_data_raw)))
 
         track_data = mapped_file.readline().decode().replace('\x00', '')
 
