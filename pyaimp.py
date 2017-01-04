@@ -28,8 +28,8 @@ AIMPRemoteAccessFormat = OrderedDict([
     ('Channels', 'L'),
     ('Duration', 'L'),
     ('FileSize', 'l'),
-    ('FileMark', 'L'),
-    ('TrackNumber', 'L'),
+    ('FileMark', 'L'), # FIXME Issue with this data
+    ('TrackNumber', 'L'), # Because this data is wrong and the script sometimes make Python to crash
     ('SampleRate', 'L'),
     ('AlbumLength', 'L'),
     ('Deprecated2', '6I'),
