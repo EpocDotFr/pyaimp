@@ -1,11 +1,14 @@
 from mmapfile import mmapfile
 from enum import Enum
-from io import StringIO
 import struct
 import threading
 import win32gui
 import win32api
 import win32con
+import ctypes
+import ctypes.wintypes
+import time
+import io
 
 __version__ = '0.1.0'
 
@@ -82,6 +85,63 @@ AIMP_RA_NOTIFY_PROPERTY = AIMP_RA_NOTIFY_BASE + 3
 
 # -----------------------------------------------------
 
+class AlbumImageCopyData(ctypes.Structure):
+    _fields_ = [
+        ('dwData', ctypes.wintypes.DWORD),
+        ('cbData', ctypes.wintypes.DWORD),
+        ('lpData', ctypes.c_void_p)
+    ]
+
+PAlbumImageCopyData = ctypes.POINTER(AlbumImageCopyData)
+
+# -----------------------------------------------------
+
+class AlbumImageInternalWindow(threading.Thread):
+    def _handle_wm_copydata(self, hwnd, msg, wparam, lparam):
+        self.image = None
+
+        album_image_copy_data = ctypes.cast(lparam, PAlbumImageCopyData)
+
+        if album_image_copy_data.contents.dwData != WM_AIMP_COPYDATA_ALBUMART_ID:
+            self.stop()
+        else:
+            image_data = ctypes.wstring_at(album_image_copy_data.contents.lpData, album_image_copy_data.contents.cbData) # TODO
+
+            self.image = image_data
+
+        self.stop()
+
+    def run(self):
+        wc = win32gui.WNDCLASS()
+        wc.lpszClassName = 'pyaimp'
+        wc.lpfnWndProc = {
+            win32con.WM_COPYDATA: self._handle_wm_copydata
+        }
+
+        hinstance = wc.hInstance = win32api.GetModuleHandle(None)
+        class_name = win32gui.RegisterClass(wc)
+
+        self.hwnd = win32gui.CreateWindow(
+            class_name,
+            'PyAIMP ' + __version__,
+            0,
+            0, 
+            0,
+            win32con.CW_USEDEFAULT, 
+            win32con.CW_USEDEFAULT,
+            0, 
+            0,
+            hinstance, 
+            None
+        )
+
+        win32gui.PumpMessages()
+
+    def stop(self):
+        win32api.PostQuitMessage()
+
+# -----------------------------------------------------
+
 class PlayerState(Enum):
     Stopped = 0
     Paused = 1
@@ -97,38 +157,6 @@ class Client:
 
         if not self._aimp_hwnd:
             raise RuntimeError('Unable to find the AIMP instance. Are you sure it is running?')
-
-    def _handle_wm_copydata(self, hwnd, msg, wparam, lparam):
-        print(hwnd)
-        print(msg)
-        print(wparam)
-        print(lparam)
-
-    def _create_internal_hwnd(self):
-        wc = win32gui.WNDCLASS()
-        wc.lpszClassName = 'pyaimp'
-        wc.lpfnWndProc = {
-            win32con.WM_COPYDATA: self._handle_wm_copydata
-        }
-
-        hinstance = wc.hInstance = win32api.GetModuleHandle(None)
-        class_name = win32gui.RegisterClass(wc)
-
-        self._internal_hwnd = win32gui.CreateWindow(
-            class_name,
-            'PyAIMP ' + __version__,
-            0,
-            0, 
-            0,
-            win32con.CW_USEDEFAULT, 
-            win32con.CW_USEDEFAULT,
-            0, 
-            0,
-            hinstance, 
-            None
-        )
-
-        win32gui.PumpMessages()
 
     def _get_prop(self, prop_id):
         return win32api.SendMessage(self._aimp_hwnd, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_GET, 0)
@@ -182,7 +210,7 @@ class Client:
             'sample_rate': meta_data_unpacked['SampleRate']
         }
 
-        with StringIO(track_data) as s:
+        with io.StringIO(track_data) as s:
             ret['album'] = s.read(meta_data_unpacked['AlbumLength'])
             ret['artist'] = s.read(meta_data_unpacked['ArtistLength'])
             ret['year'] = s.read(meta_data_unpacked['DateLength'])
@@ -302,15 +330,24 @@ class Client:
     def open_playlists(self):
         self._send_command(AIMP_RA_CMD_OPEN_PLAYLISTS)
 
-    def get_album_image(self):
-        threading.Thread(target=self._create_internal_hwnd).start()
+    def start_visualization(self):
+        self._send_command(AIMP_RA_CMD_VISUAL_START)
 
-        res = self._send_command(AIMP_RA_CMD_GET_ALBUMART, self._internal_hwnd) # FIXME It runs before the thread even start
+    def stop_visualization(self):
+        self._send_command(AIMP_RA_CMD_VISUAL_STOP)
+
+    def get_album_image(self):
+        album_image_internal_window = AlbumImageInternalWindow()
+        album_image_internal_window.start()
+
+        time.sleep(0.5) # FIXME Temp because the below line runs before the thread even start
+
+        res = self._send_command(AIMP_RA_CMD_GET_ALBUMART, album_image_internal_window.hwnd)
 
         if not res:
             return None
 
-        # TODO
+        return album_image_internal_window.image
 
     def start_visualization(self):
         self._send_command(AIMP_RA_CMD_VISUAL_START)
