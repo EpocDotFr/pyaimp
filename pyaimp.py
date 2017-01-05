@@ -21,7 +21,7 @@ __all__ = [
 AIMPRemoteAccessClass = 'AIMP2_RemoteInfo'
 AIMPRemoteAccessMapFileSize = 2048
 
-AIMPRemoteAccessFormat = OrderedDict([
+AIMPRemoteAccessPackFormat = OrderedDict([
     ('Deprecated1', 'L'),
     ('Active', '?'),
     ('BitRate', 'L'),
@@ -29,7 +29,7 @@ AIMPRemoteAccessFormat = OrderedDict([
     ('Duration', 'L'),
     ('FileSize', 'l'),
     ('FileMark', 'L'), # FIXME Issue with this data
-    ('TrackNumber', 'L'), # Because this data is wrong and the script sometimes make Python to crash
+    ('TrackNumber', 'L'), # FIXME Because this format is wrong and the script sometimes makes Python crash
     ('SampleRate', 'L'),
     ('AlbumLength', 'L'),
     ('Deprecated2', '6I'),
@@ -190,11 +190,11 @@ class Client:
     def get_current_track_infos(self):
         mapped_file = mmapfile(None, AIMPRemoteAccessClass, MaximumSize=AIMPRemoteAccessMapFileSize)
 
-        pack_format = ''.join(AIMPRemoteAccessFormat.values())
+        pack_format = ''.join(AIMPRemoteAccessPackFormat.values())
 
         meta_data_raw = mapped_file.read(struct.calcsize(pack_format))
 
-        meta_data_unpacked = dict(zip(AIMPRemoteAccessFormat.keys(), struct.unpack(pack_format, meta_data_raw)))
+        meta_data_unpacked = dict(zip(AIMPRemoteAccessPackFormat.keys(), struct.unpack(pack_format, meta_data_raw)))
 
         track_data = mapped_file.readline().decode().replace('\x00', '')
 
