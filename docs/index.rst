@@ -3,7 +3,7 @@ PyAIMP documentation
 
 Welcome! This documentation is about PyAIMP, a Python `AIMP <http://www.aimp.ru/>`_ remote API wrapper.
 
-PyAIMP comes as a simple Python module that covers 100% of the AIMP SDK features with the help of `pywin32 <https://pypi.python.org/pypi/pypiwin32>`_.
+PyAIMP comes as a simple Python module that covers 100% of the AIMP remote API features with the help of `pywin32 <https://pypi.python.org/pypi/pypiwin32>`_ (the only dependency).
 
 Prerequisites
 -------------
@@ -25,8 +25,32 @@ The McGyver way, after cloning/downloading this repo:
 
     $ python setup.py install
 
-Quick usage
------------
+Usage
+-----
+
+Create a :class:`pyaimp.Client` instance and you are ready to use any of its public methods.
+
+Example displaying the current playback status:
+
+.. code-block:: python
+
+    import pyaimp
+
+    try:
+        player = pyaimp.Client()
+
+        status = player.get_player_state()
+
+        if status == pyaimp.PlayerState.Stopped:
+            print('AIMP actually doesn\'t play anything')
+        elif status == pyaimp.PlayerState.Paused:
+            print('AIMP is taking a break')
+        elif status == pyaimp.PlayerState.Playing:
+            print('Rock \'n Roll baby)
+    except RuntimeError as re: # AIMP instance not found
+        print(re)
+
+Continue reading below to know about what you can do.
 
 API docs
 --------

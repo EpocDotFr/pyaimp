@@ -241,6 +241,10 @@ class Client:
         return self._get_prop(AIMP_RA_PROPERTY_PLAYER_DURATION)
 
     def get_player_state(self):
+        """Return the current playback status. The returned value is equal to one of the :class:`pyaimp.PlayerState` enumeration.
+
+        :rtype: int
+        """
         return self._get_prop(AIMP_RA_PROPERTY_PLAYER_STATE)
 
     def get_volume(self):
