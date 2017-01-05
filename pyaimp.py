@@ -14,7 +14,7 @@ import io
 __version__ = '0.1.0'
 
 __all__ = [
-    'PlayerState',
+    'PlayBackState',
     'Client'
 ]
 
@@ -162,7 +162,11 @@ class AlbumImageInternalWindow(threading.Thread):
 
 # -----------------------------------------------------
 
-class PlayerState(Enum):
+class PlayBackState(Enum):
+    """Enumeration (extending :py:class:`enum.Enum`) of all possible AIMP playback states.
+
+    May be used in conjonction with :func:`pyaimp.Client.get_playback_state` result."""
+
     Stopped = 0
     Paused = 1
     Playing = 2
@@ -240,10 +244,10 @@ class Client:
     def get_current_track_duration(self):
         return self._get_prop(AIMP_RA_PROPERTY_PLAYER_DURATION)
 
-    def get_player_state(self):
-        """Return the current playback status. The returned value is equal to one of the :class:`pyaimp.PlayerState` enumeration.
+    def get_playback_state(self):
+        """Return the current playback state. The returned value is equal to one of the :class:`pyaimp.PlayBackState` enumeration.
 
-        :rtype: int
+        :rtype: integer
         """
         return self._get_prop(AIMP_RA_PROPERTY_PLAYER_STATE)
 

@@ -3,6 +3,8 @@ PyAIMP documentation
 
 Welcome! This documentation is about PyAIMP, a Python `AIMP <http://www.aimp.ru/>`_ remote API wrapper.
 
+|pyversion| |pypiv| |pypil|
+
 PyAIMP comes as a simple Python module that covers 100% of the AIMP remote API features with the help of `pywin32 <https://pypi.python.org/pypi/pypiwin32>`_ (the only dependency).
 
 Prerequisites
@@ -30,27 +32,27 @@ Usage
 
 Create a :class:`pyaimp.Client` instance and you are ready to use any of its public methods.
 
-Example displaying the current playback status:
+Example displaying the current playback state:
 
 .. code-block:: python
 
     import pyaimp
 
     try:
-        player = pyaimp.Client()
+        client = pyaimp.Client()
 
-        status = player.get_player_state()
+        state = client.get_playback_state()
 
-        if status == pyaimp.PlayerState.Stopped:
+        if state == pyaimp.PlayBackState.Stopped:
             print('AIMP actually doesn\'t play anything')
-        elif status == pyaimp.PlayerState.Paused:
+        elif state == pyaimp.PlayBackState.Paused:
             print('AIMP is taking a break')
-        elif status == pyaimp.PlayerState.Playing:
-            print('Rock \'n Roll baby)
+        elif state == pyaimp.PlayBackState.Playing:
+            print('Rock \'n Roll baby')
     except RuntimeError as re: # AIMP instance not found
         print(re)
 
-Continue reading below to know about what you can do.
+Continue reading to know about what you can do.
 
 API docs
 --------
@@ -58,3 +60,7 @@ API docs
 .. automodule:: pyaimp
    :members:
    :undoc-members:
+
+.. |pyversion| image:: https://img.shields.io/pypi/pyversions/pyaimp.svg
+.. |pypiv| image:: https://img.shields.io/pypi/v/pyaimp.svg
+.. |pypil| image:: https://img.shields.io/pypi/l/pyaimp.svg
