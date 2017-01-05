@@ -28,11 +28,11 @@ AIMPRemoteAccessPackFormat = OrderedDict([
     ('Channels', 'L'),
     ('Duration', 'L'),
     ('FileSize', 'l'),
-    ('FileMark', 'L'), # FIXME Issue with this data
-    ('TrackNumber', 'L'), # FIXME Because this format is wrong and the script sometimes makes Python crash
-    ('SampleRate', 'L'),
-    ('AlbumLength', 'L'),
+    ('FileMark', 'L'),
     ('Deprecated2', '6I'),
+    ('SampleRate', 'L'),
+    ('TrackNumber', 'L'),
+    ('AlbumLength', 'L'),
     ('ArtistLength', 'L'),
     ('DateLength', 'L'),
     ('FileNameLength', 'L'),
