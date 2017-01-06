@@ -6,6 +6,8 @@ import threading
 import win32gui
 import win32api
 import win32con
+import win32process
+import win32con
 import ctypes
 import ctypes.wintypes
 import time
@@ -187,26 +189,37 @@ class Client:
     """
 
     def __init__(self):
-        self._get_aimp_hwnd()
+        self._get_aimp_window()
+        self._get_aimp_exe_path()
 
-    def _get_aimp_hwnd(self):
-        self._aimp_hwnd = win32gui.FindWindow(AIMPRemoteAccessClass, None)
+    def _get_aimp_window(self):
+        self._aimp_window = win32gui.FindWindow(AIMPRemoteAccessClass, None)
 
-        if not self._aimp_hwnd:
+        if not self._aimp_window:
             raise RuntimeError('Unable to find the AIMP window. Are you sure it is running?')
 
+    def _get_aimp_exe_path(self):
+        win_thread_proc_id = win32process.GetWindowThreadProcessId(self._aimp_window)
+
+        pwnd = win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS, False, win_thread_proc_id[1])
+
+        self._aimp_exe_path = win32process.GetModuleFileNameEx(pwnd, None)
+
+        if not self._aimp_exe_path:
+            raise RuntimeError('Unable to retrieve the AIMP executable.')
+
     def _get_prop(self, prop_id):
-        return win32api.SendMessage(self._aimp_hwnd, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_GET, 0)
+        return win32api.SendMessage(self._aimp_window, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_GET, 0)
 
     def _set_prop(self, prop_id, value):
-        win32api.SendMessage(self._aimp_hwnd, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_SET, value)
+        win32api.SendMessage(self._aimp_window, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_SET, value)
 
     def _send_command(self, command_id, parameter=None):
-        return win32api.SendMessage(self._aimp_hwnd, WM_AIMP_COMMAND, command_id, parameter)
+        return win32api.SendMessage(self._aimp_window, WM_AIMP_COMMAND, command_id, parameter)
 
     def _run_cli_command(self, command, param1=None):
         cli = [
-            'C:\Program Files (x86)\AIMP\AIMP.exe', # TODO Autodetect
+            self._aimp_exe_path,
             '/' + command.upper(),
             param1
         ]
