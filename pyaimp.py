@@ -167,9 +167,9 @@ class PlayBackState(Enum):
 
     May be used in conjonction with :func:`pyaimp.Client.get_playback_state` result."""
 
-    Stopped = 0
-    Paused = 1
-    Playing = 2
+    Stopped = 0 #: There's currently no active track
+    Paused = 1 #: The current track playback is currently suspended
+    Playing = 2 #: A track is being played
 
 
 class Client:
@@ -228,6 +228,10 @@ class Client:
     # Properties
 
     def get_version(self):
+        """Return the AIMP version as a tuple containing the major version and the build number (e.g ``('4.12', 1878)``).
+
+        :rtype: tuple
+        """
         version = self._get_prop(AIMP_RA_PROPERTY_VERSION)
 
         if not version:
@@ -247,7 +251,7 @@ class Client:
     def get_playback_state(self):
         """Return the current playback state. The returned value is equal to one of the :class:`pyaimp.PlayBackState` enumeration.
 
-        :rtype: integer
+        :rtype: int
         """
         return self._get_prop(AIMP_RA_PROPERTY_PLAYER_STATE)
 
