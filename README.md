@@ -1,6 +1,6 @@
 # PyAIMP
 
-Python [AIMP](http://www.aimp.ru/) remote API wrapper.
+Python [AIMP](http://www.aimp.ru/) remote API wrapper with some extras.
 
 [![PyPI](https://img.shields.io/pypi/pyversions/pyaimp.svg)]() [[![PyPI](https://img.shields.io/pypi/v/pyaimp.svg)]()](https://pypi.python.org/pypi/pyaimp) [[![PyPI](https://img.shields.io/pypi/l/pyaimp.svg)]()](https://github.com/EpocDotFr/pyaimp/blob/master/LICENSE.md)
 

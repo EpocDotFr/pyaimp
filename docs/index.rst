@@ -1,7 +1,7 @@
 PyAIMP documentation
 ====================
 
-Welcome! This documentation is about PyAIMP, a Python `AIMP <http://www.aimp.ru/>`_ remote API wrapper.
+Welcome! This documentation is about PyAIMP, a Python `AIMP <http://www.aimp.ru/>`_ remote API wrapper with some extras.
 
 |pyversion| |pypiv| |pypil|
 
@@ -10,7 +10,7 @@ PyAIMP comes as a simple Python module that covers 100% of the AIMP remote API f
 Prerequisites
 -------------
 
-Should work on any Python 3.x version. Feel free to test with another Python version and give me feedback.
+Python 3.5+.
 
 Installation
 ------------
@@ -53,6 +53,10 @@ Example displaying the current playback state:
         print(re)
 
 Continue reading to know about what you can do.
+
+.. note::
+
+   Events are not yet supported.
 
 API docs
 --------

@@ -15,7 +15,7 @@ setup(
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries',
-        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
         'Operating System :: Microsoft :: Windows'
     ],
     keywords='aimp remote api wrapper client',

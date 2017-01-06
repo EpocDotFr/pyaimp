@@ -10,6 +10,7 @@ import ctypes
 import ctypes.wintypes
 import time
 import io
+import subprocess
 
 __version__ = '0.1.0'
 
@@ -203,6 +204,15 @@ class Client:
     def _send_command(self, command_id, parameter=None):
         return win32api.SendMessage(self._aimp_hwnd, WM_AIMP_COMMAND, command_id, parameter)
 
+    def _run_cli_command(self, command, param1=None):
+        cli = [
+            'C:\Program Files (x86)\AIMP\AIMP.exe', # TODO Autodetect
+            '/' + command.upper(),
+            param1
+        ]
+
+        subprocess.run(cli, check=True)
+
     def get_current_track_infos(self):
         """Return a dictionnary of informations about the current active track.
 
@@ -342,25 +352,25 @@ class Client:
     def quit(self):
         self._send_command(AIMP_RA_CMD_QUIT)
 
-    def add_files(self):
+    def add_files_dialog(self):
         self._send_command(AIMP_RA_CMD_ADD_FILES)
 
-    def add_folders(self):
+    def add_folders_dialog(self):
         self._send_command(AIMP_RA_CMD_ADD_FOLDERS)
 
-    def add_playlists(self):
+    def add_playlists_dialog(self):
         self._send_command(AIMP_RA_CMD_ADD_PLAYLISTS)
 
-    def add_url(self):
+    def add_url_dialog(self):
         self._send_command(AIMP_RA_CMD_ADD_URL)
 
-    def open_files(self):
+    def open_files_dialog(self):
         self._send_command(AIMP_RA_CMD_OPEN_FILES)
 
-    def open_folders(self):
+    def open_folders_dialog(self):
         self._send_command(AIMP_RA_CMD_OPEN_FOLDERS)
 
-    def open_playlists(self):
+    def open_playlists_dialog(self):
         self._send_command(AIMP_RA_CMD_OPEN_PLAYLISTS)
 
     def start_visualization(self):
@@ -400,3 +410,30 @@ class Client:
     # Events
 
     # TODO
+
+    # -----------------------------------------------------
+    # CLI commands
+
+    def add_to_playlist_and_play(self):
+        """CLI ``/ADD_PLAY`` command: Add objects to a playlist and start playing."""
+        pass
+
+    def add_to_bookmarks(self):
+        """CLI ``/BOOKMARK`` command: Add files and / or folders to your bookmarks."""
+        pass
+
+    def add_dirs_to_playlist(self):
+        """CLI ``/DIR`` command: Add folder(s) to the playlist."""
+        pass
+
+    def add_files_to_playlist(self):
+        """CLI ``/FILE`` command: Add file(s) to the playlist."""
+        pass
+
+    def add_to_active_playlist(self, obj):
+        """CLI ``/INSERT`` command: Add objects to the active playlist."""
+        self._run_cli_command('INSERT', obj)
+
+    def add_to_active_playlist_custom(self):
+        """CLI ``/QUEUE`` command: Add objects to the active playlist and put them in custom playback queue."""
+        pass
