@@ -167,12 +167,24 @@ class PlayBackState(Enum):
 
     May be used in conjonction with :func:`pyaimp.Client.get_playback_state` result."""
 
-    Stopped = 0 #: There's currently no active track
-    Paused = 1 #: The current track playback is currently suspended
-    Playing = 2 #: A track is being played
+    Stopped = 0 #: There's currently no track being played.
+    Paused = 1 #: The current track playback is currently suspended.
+    Playing = 2 #: A track is being played.
 
 
 class Client:
+    """Main class of the ``pyaimp`` module which is the wrapper around the AIMP remote API.
+
+    When a new instance of this class is created, it will search for the current AIMP window. If none
+    are found, a ``RuntimeError`` exception will be raised.
+
+    .. note::
+
+       Consider all methods to be **blocking**.
+
+    :raises RuntimeError: The AIMP window cannot be found.
+    """
+
     def __init__(self):
         self._get_aimp_hwnd()
 
@@ -180,7 +192,7 @@ class Client:
         self._aimp_hwnd = win32gui.FindWindow(AIMPRemoteAccessClass, None)
 
         if not self._aimp_hwnd:
-            raise RuntimeError('Unable to find the AIMP instance. Are you sure it is running?')
+            raise RuntimeError('Unable to find the AIMP window. Are you sure it is running?')
 
     def _get_prop(self, prop_id):
         return win32api.SendMessage(self._aimp_hwnd, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_GET, 0)
@@ -192,6 +204,15 @@ class Client:
         return win32api.SendMessage(self._aimp_hwnd, WM_AIMP_COMMAND, command_id, parameter)
 
     def get_current_track_infos(self):
+        """Return a dictionnary of informations about the current active track.
+
+        .. warning::
+
+           This method is experimental and should be used with caution.
+
+        :rtype: dict
+        """
+
         mapped_file = mmapfile(None, AIMPRemoteAccessClass, MaximumSize=AIMPRemoteAccessMapFileSize)
 
         pack_format = ''.join(AIMPRemoteAccessPackFormat.values())
@@ -228,7 +249,7 @@ class Client:
     # Properties
 
     def get_version(self):
-        """Return the AIMP version as a tuple containing the major version and the build number (e.g ``('4.12', 1878)``).
+        """Return the AIMP version as a tuple containing the major version and the build number, e.g ``('4.12', 1878)``.
 
         :rtype: tuple
         """
@@ -349,6 +370,14 @@ class Client:
         self._send_command(AIMP_RA_CMD_VISUAL_STOP)
 
     def get_album_image(self):
+        """Return the binary data of the album image of the current active track or ``None`` if... there's none.
+
+        .. warning::
+
+           This method is WIP and is unusable at this moment.
+
+        :rtype: bytes or None
+        """
         album_image_internal_window = AlbumImageInternalWindow()
         album_image_internal_window.start()
 
