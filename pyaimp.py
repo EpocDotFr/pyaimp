@@ -183,7 +183,7 @@ class Client:
 
     .. note::
 
-       Consider all methods to be **blocking**.
+       Consider all methods in this class to be **blocking**.
 
     :raises RuntimeError: The AIMP window cannot be found.
     """
@@ -226,8 +226,24 @@ class Client:
 
         subprocess.run(cli, check=True)
 
-    def get_current_track_infos(self):
-        """Return a dictionnary of informations about the current active track.
+    def get_current_track_info(self):
+        """Return a dictionary of information about the current active track.
+
+        Dictionary keys are:
+
+          - ``bit_rate`` (``int``): `Audio bit rate <https://en.wikipedia.org/wiki/Bit_rate#Encoding_bit_rate>`_
+          - ``channels`` (``int``): Number of `audio channels <https://en.wikipedia.org/wiki/Audio_signal>`_
+          - ``duration`` (``int``): Duration of the track, in milliseconds
+          - ``file_size`` (``int``): Size of the file, in bytes
+          - ``file_mark`` (``int``): Unknown
+          - ``track_number`` (``int``): Track number (as stored in the audio tags)
+          - ``sample_rate`` (``int``): `Audio sample rate <https://en.wikipedia.org/wiki/Sampling_(signal_processing)#Sampling_rate>`_
+          - ``album`` (``str``): Album name or an empty string if none
+          - ``artist`` (``str``): Artist name or an empty string if none
+          - ``year`` (``int``): Track year or an empty string if none
+          - ``filename`` (``str``): Path or URL to the track
+          - ``genre`` (``str``): Track genre or an empty string if none
+          - ``title`` (``str``): Track title or an empty string if none
 
         .. warning::
 
@@ -284,12 +300,24 @@ class Client:
         return ('{:.2f}'.format(win32api.HIWORD(version) / 100), win32api.LOWORD(version))
 
     def get_player_position(self):
+        """Return the current player position as the number of elapsed milliseconds since the beginning of the track.
+
+        :rtype: int
+        """
         return self._get_prop(AIMP_RA_PROPERTY_PLAYER_POSITION)
 
     def set_player_position(self, position):
+        """Set the current player position.
+
+        :param int position: Number of elapsed milliseconds since the beginning of the track
+        """
         self._set_prop(AIMP_RA_PROPERTY_PLAYER_POSITION, position)
 
     def get_current_track_duration(self):
+        """Return the current track duration, in milliseconds.
+
+        :rtype: int
+        """
         return self._get_prop(AIMP_RA_PROPERTY_PLAYER_DURATION)
 
     def get_playback_state(self):
@@ -300,96 +328,176 @@ class Client:
         return self._get_prop(AIMP_RA_PROPERTY_PLAYER_STATE)
 
     def get_volume(self):
+        """Return the current volume, in percents.
+
+        :rtype: int
+        """
         return self._get_prop(AIMP_RA_PROPERTY_VOLUME)
 
     def set_volume(self, volume):
+        """Set the current volume.
+
+        :param int volume: The new volume, in percent
+        """
         self._set_prop(AIMP_RA_PROPERTY_VOLUME, volume)
 
     def is_muted(self):
+        """Return the muted state of the player.
+
+        :rtype: bool
+        """
         return bool(self._get_prop(AIMP_RA_PROPERTY_MUTE))
 
     def set_muted(self, muted):
+        """Set the muted state of the player.
+
+        :param bool muted: Whether the player should be muted or not
+        """
         self._set_prop(AIMP_RA_PROPERTY_MUTE, int(muted))
 
     def is_track_repeated(self):
+        """Return the repeat state of the player.
+
+        :rtype: bool
+        """
         return bool(self._get_prop(AIMP_RA_PROPERTY_TRACK_REPEAT))
 
     def set_track_repeated(self, repeat):
+        """Set the repeat state of the player.
+
+        :param bool repeat: Whether the track should be repeated or not
+        """
         self._set_prop(AIMP_RA_PROPERTY_TRACK_REPEAT, int(repeat))
 
     def is_shuffled(self):
+        """Return the shuffle state of the player.
+
+        :rtype: bool
+        """
         return bool(self._get_prop(AIMP_RA_PROPERTY_TRACK_SHUFFLE))
 
     def set_shuffled(self, shuffled):
+        """Set the shuffle state of the player.
+
+        :param bool shuffled: Whether the tracks should be shuffled or not
+        """
         self._set_prop(AIMP_RA_PROPERTY_TRACK_SHUFFLE, int(shuffled))
 
     def is_recording(self):
+        """Return the radio recording state of the player.
+
+        :rtype: bool
+        """
         return bool(self._get_prop(AIMP_RA_PROPERTY_RADIOCAP))
 
     def set_recording(self, recording):
+        """Set the radio recording state of the player.
+
+        :param bool recording: Whether the radio recording should be active or not
+        """
         self._set_prop(AIMP_RA_PROPERTY_RADIOCAP, int(recording))
 
     def is_visualization_fullscreen(self):
+        """Return whether the visualization is fullscreen or not.
+
+        :rtype: bool
+        """
         return bool(self._get_prop(AIMP_RA_PROPERTY_VISUAL_FULLSCREEN))
 
     def set_visualization_fullscreen(self, visualization_fullscreen):
+        """Set the visualization to be fullscreen or not.
+
+        :param bool visualization_fullscreen: Whether the visualization should be fullscreen or not
+        """
         self._set_prop(AIMP_RA_PROPERTY_VISUAL_FULLSCREEN, int(visualization_fullscreen))
 
     # -----------------------------------------------------
     # Commands
 
     def play(self):
+        """Different behaviors may be encountered when using this method:
+
+          - If the player is stopped, this will start playback.
+          - If the player is paused, this will resume playback.
+          - If the player is playing, this will start playback from beginning.
+        """
         self._send_command(AIMP_RA_CMD_PLAY)
 
     def play_pause(self):
+        """Different behaviors may be encountered when using this method:
+
+          - If the player is stopped, this will start playback.
+          - If the player is paused, this will resume playback.
+          - If the player is playing, this will start pauses playback.
+        """
         self._send_command(AIMP_RA_CMD_PLAYPAUSE)
 
     def pause(self):
+        """Different behaviors may be encountered when using this method:
+
+          - If the player is playing, this will pause playback.
+          - If the player is paused, this will resume playback.
+        """
         self._send_command(AIMP_RA_CMD_PAUSE)
 
     def stop(self):
+        """Stop the playback."""
         self._send_command(AIMP_RA_CMD_STOP)
 
     def next(self):
+        """Start playing the next track in the playlist."""
         self._send_command(AIMP_RA_CMD_NEXT)
 
     def prev(self):
+        """Start playing the previous track in the playlist."""
         self._send_command(AIMP_RA_CMD_PREV)
 
     def next_visualization(self):
+        """Start the next visualization."""
         self._send_command(AIMP_RA_CMD_VISUAL_NEXT)
 
     def prev_visualization(self):
+        """Start the previous visualization."""
         self._send_command(AIMP_RA_CMD_VISUAL_PREV)
 
     def quit(self):
+        """Shutdown and exit AIMP. You'll obviously not be able to do anything after using this method."""
         self._send_command(AIMP_RA_CMD_QUIT)
 
     def add_files_dialog(self):
+        """Execute the "Files Adding" dialog."""
         self._send_command(AIMP_RA_CMD_ADD_FILES)
 
     def add_folders_dialog(self):
+        """Execute the "Folders Adding" dialog."""
         self._send_command(AIMP_RA_CMD_ADD_FOLDERS)
 
     def add_playlists_dialog(self):
+        """Execute the "Playlists Adding" dialog."""
         self._send_command(AIMP_RA_CMD_ADD_PLAYLISTS)
 
     def add_url_dialog(self):
+        """Execute the "URL Adding" dialog."""
         self._send_command(AIMP_RA_CMD_ADD_URL)
 
     def open_files_dialog(self):
+        """Execute the "Files Opening" dialog."""
         self._send_command(AIMP_RA_CMD_OPEN_FILES)
 
     def open_folders_dialog(self):
+        """Execute the "Folders Opening" dialog."""
         self._send_command(AIMP_RA_CMD_OPEN_FOLDERS)
 
     def open_playlists_dialog(self):
+        """Execute the "Playlists Opening" dialog."""
         self._send_command(AIMP_RA_CMD_OPEN_PLAYLISTS)
 
     def start_visualization(self):
+        """Start the visualization."""
         self._send_command(AIMP_RA_CMD_VISUAL_START)
 
     def stop_visualization(self):
+        """Stop the visualization."""
         self._send_command(AIMP_RA_CMD_VISUAL_STOP)
 
     def get_album_image(self):
@@ -413,12 +521,6 @@ class Client:
 
         return album_image_internal_window.image
 
-    def start_visualization(self):
-        self._send_command(AIMP_RA_CMD_VISUAL_START)
-
-    def stop_visualization(self):
-        self._send_command(AIMP_RA_CMD_VISUAL_STOP)
-
     # -----------------------------------------------------
     # Events
 
@@ -427,26 +529,50 @@ class Client:
     # -----------------------------------------------------
     # CLI commands
 
-    def add_to_playlist_and_play(self):
-        """CLI ``/ADD_PLAY`` command: Add objects to a playlist and start playing."""
-        pass
+    def add_to_playlist_and_play(self, obj):
+        """CLI ``/ADD_PLAY`` command: Add objects to a playlist and start playing.
 
-    def add_to_bookmarks(self):
-        """CLI ``/BOOKMARK`` command: Add files and / or folders to your bookmarks."""
-        pass
+        :param str obj: Path to a playlist, folder or file
+        """
+        self._run_cli_command('ADD_PLAY', obj)
 
-    def add_dirs_to_playlist(self):
-        """CLI ``/DIR`` command: Add folder(s) to the playlist."""
-        pass
+    def add_to_bookmarks(self, obj):
+        """CLI ``/BOOKMARK`` command: Add files and/or folders to your bookmarks.
 
-    def add_files_to_playlist(self):
-        """CLI ``/FILE`` command: Add file(s) to the playlist."""
-        pass
+        :param str obj: Path to a folder or file
+        """
+        self._run_cli_command('BOOKMARK', obj)
+
+    def add_dirs_to_playlist(self, dir):
+        """CLI ``/DIR`` command: Add folder(s) to the playlist.
+
+        Whether playing of added the files starts depends on the player settings.
+
+        :param str dir: Path to a directory
+        """
+        self._run_cli_command('DIR', dir)
+
+    def add_files_to_playlist(self, file):
+        """CLI ``/FILE`` command: Add file(s) to the playlist.
+
+        Whether playing of added the files starts depends on the player settings.
+
+        :param str file: Path to a file
+        """
+        self._run_cli_command('FILE', file)
 
     def add_to_active_playlist(self, obj):
-        """CLI ``/INSERT`` command: Add objects to the active playlist."""
+        """CLI ``/INSERT`` command: Add objects to the active playlist.
+
+        Whether playing of added the files starts depends on the player settings.
+
+        :param str obj: Path to a playlist, folder or file
+        """
         self._run_cli_command('INSERT', obj)
 
-    def add_to_active_playlist_custom(self):
-        """CLI ``/QUEUE`` command: Add objects to the active playlist and put them in custom playback queue."""
-        pass
+    def add_to_active_playlist_custom(self, obj):
+        """CLI ``/QUEUE`` command: Add objects to the active playlist and put them in custom playback queue.
+
+        :param str obj: Path to a playlist, folder or file
+        """
+        self._run_cli_command('QUEUE', obj)

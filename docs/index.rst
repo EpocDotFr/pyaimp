@@ -51,6 +51,8 @@ Example displaying the current playback state:
             print('Rock \'n Roll baby')
     except RuntimeError as re: # AIMP instance not found
         print(re)
+    except Exception as e:
+        print(e)
 
 Continue reading to know about what you can do.
 
