@@ -228,7 +228,7 @@ class Client:
 
     def detect_aimp(self):
         """
-        Retrieve the AIMP window handler and the full path to its executable, which are required in order
+        Detect the AIMP window handler and the full path to its executable, which are required in order
         to be able to remote control AIMP.
 
         This method is automatically called for you when creating a new instance of this class.
@@ -236,6 +236,8 @@ class Client:
         This method may be useful for you when AIMP is closed, then restarted for any reason. You'll
         need to call it to retrieve the newly created AIMP window handler or you won't be able to use the
         same instance anymore.
+
+        There isn't anything returned because it defines internal attributes.
         """
         self._get_aimp_window()
         self._get_aimp_exe_path()
@@ -477,7 +479,8 @@ class Client:
     def quit(self):
         """Shutdown and exit AIMP.
 
-        You'll obviously not be able to do anything after using this method until AIMP is opened again."""
+        You'll obviously not be able to do anything after using this method until AIMP is opened again and you
+        called :func:`pyaimp.Client.detect_aimp`."""
         self._send_command(AIMP_RA_CMD_QUIT)
 
     def add_files_dialog(self):
