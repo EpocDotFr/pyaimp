@@ -178,8 +178,9 @@ class PlayBackState(Enum):
 class Client:
     """Main class of the ``pyaimp`` module which is the wrapper around the AIMP remote API.
 
-    When a new instance of this class is created, it will search for the current AIMP window. If none
-    are found, a ``RuntimeError`` exception will be raised.
+    When a new instance of this class is created, it will search for the current AIMP window
+    handle using :func:`pyaimp.Client.detect_aimp`. If none are found, a ``RuntimeError``
+    exception will be raised.
 
     .. note::
 
@@ -189,8 +190,7 @@ class Client:
     """
 
     def __init__(self):
-        self._get_aimp_window()
-        self._get_aimp_exe_path()
+        self.detect_aimp()
 
     def _get_aimp_window(self):
         self._aimp_window = win32gui.FindWindow(AIMPRemoteAccessClass, None)
@@ -225,6 +225,20 @@ class Client:
         ]
 
         subprocess.run(cli, check=True)
+
+    def detect_aimp(self):
+        """
+        Retrieve the AIMP window handler and the full path to its executable, which are required in order
+        to be able to remote control AIMP.
+
+        This method is automatically called for you when creating a new instance of this class.
+
+        This method may be useful for you when AIMP is closed, then restarted for any reason. You'll
+        need to call it to retrieve the newly created AIMP window handler or you won't be able to use the
+        same instance anymore.
+        """
+        self._get_aimp_window()
+        self._get_aimp_exe_path()
 
     def get_current_track_info(self):
         """Return a dictionary of information about the current active track.
@@ -461,7 +475,9 @@ class Client:
         self._send_command(AIMP_RA_CMD_VISUAL_PREV)
 
     def quit(self):
-        """Shutdown and exit AIMP. You'll obviously not be able to do anything after using this method."""
+        """Shutdown and exit AIMP.
+
+        You'll obviously not be able to do anything after using this method until AIMP is opened again."""
         self._send_command(AIMP_RA_CMD_QUIT)
 
     def add_files_dialog(self):

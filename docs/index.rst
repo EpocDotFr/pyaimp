@@ -10,7 +10,8 @@ PyAIMP comes as a simple Python module that covers 100% of the AIMP remote API f
 Prerequisites
 -------------
 
-Python 3.5+.
+  - Python 3.5+
+  - AIMP
 
 Installation
 ------------
