@@ -8,7 +8,7 @@ PyAIMP comes as a simple Python module that covers 100% of the AIMP remote API f
 
 ## Documentation
 
-Everything you need to know is located [here](https://pythonhosted.org/pyaimp/).
+Everything you need to know is located [here](https://epocdotfr.github.io/pyaimp/).
 
 ## Changelog
 
