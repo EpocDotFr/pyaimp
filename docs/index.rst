@@ -68,6 +68,6 @@ API docs
    :members:
    :undoc-members:
 
-.. |pyversion| image:: https://img.shields.io/pypi/pyversions/pyaimp.svg
-.. |pypiv| image:: https://img.shields.io/pypi/v/pyaimp.svg
-.. |pypil| image:: https://img.shields.io/pypi/l/pyaimp.svg
+.. |pyversion| image:: https://img.shields.io/pypi/pyversions/pyaimp.svg?link=https://pypi.python.org/pypi/pyaimp
+.. |pypiv| image:: https://img.shields.io/pypi/v/pyaimp.svg?link=https://pypi.python.org/pypi/pyaimp
+.. |pypil| image:: https://img.shields.io/pypi/l/pyaimp.svg?link=https://github.com/EpocDotFr/pyaimp/blob/master/LICENSE.md
