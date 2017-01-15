@@ -6,7 +6,7 @@ setup(
     name='pyaimp',
     version=pyaimp.__version__,
     description='AIMP remote API wrapper for Python',
-    long_description='You can find the documentation `here <https://github.com/EpocDotFr/pyaimp#readme>`_.',
+    long_description='Everything you need to know is located `here <https://epocdotfr.github.io/pyaimp/>`_.',
     url='https://github.com/EpocDotFr/pyaimp',
     author='Maxime "Epoc" G.',
     author_email='contact.nospam@epoc.nospam.fr',
