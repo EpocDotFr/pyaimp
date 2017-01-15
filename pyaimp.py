@@ -193,12 +193,22 @@ class Client:
         self.detect_aimp()
 
     def _get_aimp_window(self):
+        """Find the AIMP window handler who provides the remote API calls endpoint.
+
+        :raises RuntimeError: The AIMP window cannot be found.
+        :rtype: None
+        """
         self._aimp_window = win32gui.FindWindow(AIMPRemoteAccessClass, None)
 
         if not self._aimp_window:
             raise RuntimeError('Unable to find the AIMP window. Are you sure it is running?')
 
     def _get_aimp_exe_path(self):
+        """Find the AIMP executable path given its window handler.
+
+        :raises RuntimeError: The AIMP executable path cannot be found.
+        :rtype: None
+        """
         win_thread_proc_id = win32process.GetWindowThreadProcessId(self._aimp_window)
 
         pwnd = win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS, False, win_thread_proc_id[1])
@@ -209,15 +219,19 @@ class Client:
             raise RuntimeError('Unable to retrieve the AIMP executable.')
 
     def _get_prop(self, prop_id):
+        """Retrieve an AIMP property."""
         return win32api.SendMessage(self._aimp_window, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_GET, 0)
 
     def _set_prop(self, prop_id, value):
+        """Set an AIMP property."""
         win32api.SendMessage(self._aimp_window, WM_AIMP_PROPERTY, prop_id | AIMP_RA_PROPVALUE_SET, value)
 
     def _send_command(self, command_id, parameter=None):
+        """Send an AIMP command."""
         return win32api.SendMessage(self._aimp_window, WM_AIMP_COMMAND, command_id, parameter)
 
     def _run_cli_command(self, command, param1=None):
+        """Run an AIMP CLI command."""
         cli = [
             self._aimp_exe_path,
             '/' + command.upper(),
@@ -238,6 +252,8 @@ class Client:
         same instance anymore.
 
         There isn't anything returned because it defines internal attributes.
+
+        :raises RuntimeError: The AIMP window cannot be found.
         """
         self._get_aimp_window()
         self._get_aimp_exe_path()
@@ -326,6 +342,7 @@ class Client:
         """Set the current player position.
 
         :param int position: Number of elapsed milliseconds since the beginning of the track
+        :rtype: None
         """
         self._set_prop(AIMP_RA_PROPERTY_PLAYER_POSITION, position)
 
@@ -354,6 +371,7 @@ class Client:
         """Set the current volume.
 
         :param int volume: The new volume, in percent
+        :rtype: None
         """
         self._set_prop(AIMP_RA_PROPERTY_VOLUME, volume)
 
@@ -368,6 +386,7 @@ class Client:
         """Set the muted state of the player.
 
         :param bool muted: Whether the player should be muted or not
+        :rtype: None
         """
         self._set_prop(AIMP_RA_PROPERTY_MUTE, int(muted))
 
@@ -382,6 +401,7 @@ class Client:
         """Set the repeat state of the player.
 
         :param bool repeat: Whether the track should be repeated or not
+        :rtype: None
         """
         self._set_prop(AIMP_RA_PROPERTY_TRACK_REPEAT, int(repeat))
 
@@ -396,6 +416,7 @@ class Client:
         """Set the shuffle state of the player.
 
         :param bool shuffled: Whether the tracks should be shuffled or not
+        :rtype: None
         """
         self._set_prop(AIMP_RA_PROPERTY_TRACK_SHUFFLE, int(shuffled))
 
@@ -410,6 +431,7 @@ class Client:
         """Set the radio recording state of the player.
 
         :param bool recording: Whether the radio recording should be active or not
+        :rtype: None
         """
         self._set_prop(AIMP_RA_PROPERTY_RADIOCAP, int(recording))
 
@@ -424,6 +446,7 @@ class Client:
         """Set the visualization to be fullscreen or not.
 
         :param bool visualization_fullscreen: Whether the visualization should be fullscreen or not
+        :rtype: None
         """
         self._set_prop(AIMP_RA_PROPERTY_VISUAL_FULLSCREEN, int(visualization_fullscreen))
 
@@ -436,6 +459,8 @@ class Client:
           - If the player is stopped, this will start playback.
           - If the player is paused, this will resume playback.
           - If the player is playing, this will start playback from beginning.
+
+        :rtype: None
         """
         self._send_command(AIMP_RA_CMD_PLAY)
 
@@ -445,6 +470,8 @@ class Client:
           - If the player is stopped, this will start playback.
           - If the player is paused, this will resume playback.
           - If the player is playing, this will start pauses playback.
+          
+        :rtype: None
         """
         self._send_command(AIMP_RA_CMD_PLAYPAUSE)
 
@@ -453,70 +480,117 @@ class Client:
 
           - If the player is playing, this will pause playback.
           - If the player is paused, this will resume playback.
+          
+        :rtype: None
         """
         self._send_command(AIMP_RA_CMD_PAUSE)
 
     def stop(self):
-        """Stop the playback."""
+        """Stop the playback.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_STOP)
 
     def next(self):
-        """Start playing the next track in the playlist."""
+        """Start playing the next track in the playlist.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_NEXT)
 
     def prev(self):
-        """Start playing the previous track in the playlist."""
+        """Start playing the previous track in the playlist.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_PREV)
 
     def next_visualization(self):
-        """Start the next visualization."""
+        """Start the next visualization.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_VISUAL_NEXT)
 
     def prev_visualization(self):
-        """Start the previous visualization."""
+        """Start the previous visualization.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_VISUAL_PREV)
 
     def quit(self):
         """Shutdown and exit AIMP.
 
-        You'll obviously not be able to do anything after using this method until AIMP is opened again and you
-        called :func:`pyaimp.Client.detect_aimp`."""
+        You'll obviously not be able to do anything after using this method until AIMP is opened again and
+        :func:`pyaimp.Client.detect_aimp` is manually called.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_QUIT)
 
     def add_files_dialog(self):
-        """Execute the "Files Adding" dialog."""
+        """Display the "Add Files" dialog window.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_ADD_FILES)
 
     def add_folders_dialog(self):
-        """Execute the "Folders Adding" dialog."""
+        """Display the "Add Folders" dialog window.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_ADD_FOLDERS)
 
     def add_playlists_dialog(self):
-        """Execute the "Playlists Adding" dialog."""
+        """Display the "Add Playlists" dialog window.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_ADD_PLAYLISTS)
 
     def add_url_dialog(self):
-        """Execute the "URL Adding" dialog."""
+        """Display the "Add URLs" dialog window.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_ADD_URL)
 
     def open_files_dialog(self):
-        """Execute the "Files Opening" dialog."""
+        """Display the "Open Files" dialog window.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_OPEN_FILES)
 
     def open_folders_dialog(self):
-        """Execute the "Folders Opening" dialog."""
+        """Display the "Open Folders" dialog window.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_OPEN_FOLDERS)
 
     def open_playlists_dialog(self):
-        """Execute the "Playlists Opening" dialog."""
+        """Display the "Open Playlists" dialog window.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_OPEN_PLAYLISTS)
 
     def start_visualization(self):
-        """Start the visualization."""
+        """Start the visualization.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_VISUAL_START)
 
     def stop_visualization(self):
-        """Stop the visualization."""
+        """Stop the visualization.
+
+        :rtype: None
+        """
         self._send_command(AIMP_RA_CMD_VISUAL_STOP)
 
     def get_album_image(self):
@@ -552,6 +626,7 @@ class Client:
         """CLI ``/ADD_PLAY`` command: Add objects to a playlist and start playing.
 
         :param str obj: Path to a playlist, folder or file
+        :rtype: None
         """
         self._run_cli_command('ADD_PLAY', obj)
 
@@ -559,6 +634,7 @@ class Client:
         """CLI ``/BOOKMARK`` command: Add files and/or folders to your bookmarks.
 
         :param str obj: Path to a folder or file
+        :rtype: None
         """
         self._run_cli_command('BOOKMARK', obj)
 
@@ -568,6 +644,7 @@ class Client:
         Whether playing of added the files starts depends on the player settings.
 
         :param str dir: Path to a directory
+        :rtype: None
         """
         self._run_cli_command('DIR', dir)
 
@@ -577,6 +654,7 @@ class Client:
         Whether playing of added the files starts depends on the player settings.
 
         :param str file: Path to a file
+        :rtype: None
         """
         self._run_cli_command('FILE', file)
 
@@ -586,6 +664,7 @@ class Client:
         Whether playing of added the files starts depends on the player settings.
 
         :param str obj: Path to a playlist, folder or file
+        :rtype: None
         """
         self._run_cli_command('INSERT', obj)
 
@@ -593,5 +672,6 @@ class Client:
         """CLI ``/QUEUE`` command: Add objects to the active playlist and put them in custom playback queue.
 
         :param str obj: Path to a playlist, folder or file
+        :rtype: None
         """
         self._run_cli_command('QUEUE', obj)
