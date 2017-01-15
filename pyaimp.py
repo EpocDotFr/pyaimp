@@ -254,6 +254,7 @@ class Client:
         There isn't anything returned because it defines internal attributes.
 
         :raises RuntimeError: The AIMP window cannot be found.
+        :rtype: None
         """
         self._get_aimp_window()
         self._get_aimp_exe_path()
