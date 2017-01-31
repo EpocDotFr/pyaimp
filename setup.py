@@ -5,7 +5,7 @@ import pyaimp
 setup(
     name='pyaimp',
     version=pyaimp.__version__,
-    description='AIMP remote API wrapper for Python',
+    description='Python AIMP remote API wrapper with some extras',
     long_description='Everything you need to know is located `here <https://epocdotfr.github.io/pyaimp/>`_.',
     url='https://github.com/EpocDotFr/pyaimp',
     author='Maxime "Epoc" G.',
