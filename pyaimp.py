@@ -357,12 +357,13 @@ class Client:
     def get_playback_state(self):
         """Return the current playback state. The returned value is equal to one of the :class:`pyaimp.PlayBackState` enumeration.
 
-        :rtype: int
+        :rtype: pyaimp.PlayBackState.Stopped or pyaimp.PlayBackState.Paused or pyaimp.PlayBackState.Playing
         """
         current_playback_state = self._get_prop(AIMP_RA_PROPERTY_PLAYER_STATE)
 
         for playback_state in PlayBackState:
             if playback_state.value == current_playback_state:
+                print(playback_state)
                 return playback_state
 
         return None
