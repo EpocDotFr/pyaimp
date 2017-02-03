@@ -359,7 +359,13 @@ class Client:
 
         :rtype: int
         """
-        return self._get_prop(AIMP_RA_PROPERTY_PLAYER_STATE)
+        current_playback_state = self._get_prop(AIMP_RA_PROPERTY_PLAYER_STATE)
+
+        for playback_state in PlayBackState:
+            if playback_state.value == current_playback_state:
+                return playback_state
+
+        return None
 
     def get_volume(self):
         """Return the current volume, in percents.
