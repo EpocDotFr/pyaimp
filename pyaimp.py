@@ -363,7 +363,6 @@ class Client:
 
         for playback_state in PlayBackState:
             if playback_state.value == current_playback_state:
-                print(playback_state)
                 return playback_state
 
         return None
