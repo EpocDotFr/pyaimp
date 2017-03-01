@@ -285,7 +285,7 @@ class Client:
 
         .. warning::
 
-           This method is experimental and should be used with caution. See [this issue](https://github.com/EpocDotFr/pyaimp/issues/1) for more information.
+           This method is experimental and should be used with caution. See `this issue <https://github.com/EpocDotFr/pyaimp/issues/1>`_ for more information.
 
         :rtype: dict
         """
