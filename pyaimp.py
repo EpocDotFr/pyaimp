@@ -7,7 +7,6 @@ import win32gui
 import win32api
 import win32con
 import win32process
-import win32con
 import ctypes
 import ctypes.wintypes
 import time
@@ -106,7 +105,9 @@ AIMP_RA_NOTIFY_TRACK_INFO = AIMP_RA_NOTIFY_BASE + 1
 AIMP_RA_NOTIFY_TRACK_START = AIMP_RA_NOTIFY_BASE + 2
 AIMP_RA_NOTIFY_PROPERTY = AIMP_RA_NOTIFY_BASE + 3
 
+
 # -----------------------------------------------------
+
 
 class AlbumImageCopyData(ctypes.Structure):
     _fields_ = [
@@ -117,7 +118,9 @@ class AlbumImageCopyData(ctypes.Structure):
 
 PAlbumImageCopyData = ctypes.POINTER(AlbumImageCopyData)
 
+
 # -----------------------------------------------------
+
 
 class AlbumImageInternalWindow(threading.Thread):
     def _handle_wm_copydata(self, hwnd, msg, wparam, lparam):
@@ -148,13 +151,13 @@ class AlbumImageInternalWindow(threading.Thread):
             class_name,
             'PyAIMP ' + __version__,
             0,
-            0, 
             0,
-            win32con.CW_USEDEFAULT, 
+            0,
             win32con.CW_USEDEFAULT,
-            0, 
+            win32con.CW_USEDEFAULT,
             0,
-            hinstance, 
+            0,
+            hinstance,
             None
         )
 
@@ -163,7 +166,9 @@ class AlbumImageInternalWindow(threading.Thread):
     def stop(self):
         win32api.PostQuitMessage()
 
+
 # -----------------------------------------------------
+
 
 class PlayBackState(Enum):
     """Enumeration (extending :py:class:`enum.Enum`) of all possible AIMP playback states.
@@ -280,7 +285,7 @@ class Client:
 
         .. warning::
 
-           This method is experimental and should be used with caution.
+           This method is experimental and should be used with caution. See [this issue](https://github.com/EpocDotFr/pyaimp/issues/1) for more information.
 
         :rtype: dict
         """
@@ -477,7 +482,7 @@ class Client:
           - If the player is stopped, this will start playback.
           - If the player is paused, this will resume playback.
           - If the player is playing, this will start pauses playback.
-          
+
         :rtype: None
         """
         self._send_command(AIMP_RA_CMD_PLAYPAUSE)
@@ -487,7 +492,7 @@ class Client:
 
           - If the player is playing, this will pause playback.
           - If the player is paused, this will resume playback.
-          
+
         :rtype: None
         """
         self._send_command(AIMP_RA_CMD_PAUSE)
