@@ -344,17 +344,17 @@ same instance anymore.</p>
 <div><ul class="simple">
 <li><code class="docutils literal"><span class="pre">bit_rate</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): <a class="reference external" href="https://en.wikipedia.org/wiki/Bit_rate#Encoding_bit_rate">Audio bit rate</a></li>
 <li><code class="docutils literal"><span class="pre">channels</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Number of <a class="reference external" href="https://en.wikipedia.org/wiki/Audio_signal">audio channels</a></li>
-<li><code class="docutils literal"><span class="pre">duration</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Duration of the track, in milliseconds</li>
-<li><code class="docutils literal"><span class="pre">file_size</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Size of the file, in bytes</li>
+<li><code class="docutils literal"><span class="pre">duration</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Duration of the track, in milliseconds. <cite>0</cite> if unknown or none (i.e a stream)</li>
+<li><code class="docutils literal"><span class="pre">file_size</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Size of the file, in bytes. <cite>0</cite> if unknown or none (i.e a stream)</li>
 <li><code class="docutils literal"><span class="pre">file_mark</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Unknown</li>
-<li><code class="docutils literal"><span class="pre">track_number</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Track number (as stored in the audio tags)</li>
+<li><code class="docutils literal"><span class="pre">track_number</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Track number (as stored in the audio tags). <cite>0</cite> if unknown</li>
 <li><code class="docutils literal"><span class="pre">sample_rate</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): <a class="reference external" href="https://en.wikipedia.org/wiki/Sampling_(signal_processing)#Sampling_rate">Audio sample rate</a></li>
 <li><code class="docutils literal"><span class="pre">album</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): Album name or an empty string if none</li>
-<li><code class="docutils literal"><span class="pre">artist</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): Artist name or an empty string if none</li>
-<li><code class="docutils literal"><span class="pre">year</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Track year or an empty string if none</li>
-<li><code class="docutils literal"><span class="pre">filename</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): Path or URL to the track</li>
-<li><code class="docutils literal"><span class="pre">genre</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): Track genre or an empty string if none</li>
-<li><code class="docutils literal"><span class="pre">title</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): Track title or an empty string if none</li>
+<li><code class="docutils literal"><span class="pre">artist</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): Artist name or an empty string if unknown</li>
+<li><code class="docutils literal"><span class="pre">year</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Track year or an empty string if unknown</li>
+<li><code class="docutils literal"><span class="pre">filename</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): Path to the track or URL to the stream</li>
+<li><code class="docutils literal"><span class="pre">genre</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): Track genre or an empty string if unknown</li>
+<li><code class="docutils literal"><span class="pre">title</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): Track title or an empty string if unknown</li>
 </ul>
 </div></blockquote>
 <div class="admonition warning">
