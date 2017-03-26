@@ -205,7 +205,7 @@ class Client:
           - ``album`` (``str``): Album name or an empty string if none
           - ``artist`` (``str``): Artist name or an empty string if unknown
           - ``year`` (``int``): Track year or an empty string if unknown
-          - ``filename`` (``str``): Pathto the track or URL to the stream
+          - ``filename`` (``str``): Path to the track or URL to the stream
           - ``genre`` (``str``): Track genre or an empty string if unknown
           - ``title`` (``str``): Track title or an empty string if unknown
 
