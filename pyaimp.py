@@ -197,17 +197,17 @@ class Client:
 
           - ``bit_rate`` (``int``): `Audio bit rate <https://en.wikipedia.org/wiki/Bit_rate#Encoding_bit_rate>`_
           - ``channels`` (``int``): Number of `audio channels <https://en.wikipedia.org/wiki/Audio_signal>`_
-          - ``duration`` (``int``): Duration of the track, in milliseconds
-          - ``file_size`` (``int``): Size of the file, in bytes
+          - ``duration`` (``int``): Duration of the track, in milliseconds. `0` if unknown or none (i.e a stream)
+          - ``file_size`` (``int``): Size of the file, in bytes. `0` if unknown or none (i.e a stream)
           - ``file_mark`` (``int``): Unknown
-          - ``track_number`` (``int``): Track number (as stored in the audio tags)
+          - ``track_number`` (``int``): Track number (as stored in the audio tags). `0` if unknown
           - ``sample_rate`` (``int``): `Audio sample rate <https://en.wikipedia.org/wiki/Sampling_(signal_processing)#Sampling_rate>`_
           - ``album`` (``str``): Album name or an empty string if none
-          - ``artist`` (``str``): Artist name or an empty string if none
-          - ``year`` (``int``): Track year or an empty string if none
-          - ``filename`` (``str``): Path or URL to the track
-          - ``genre`` (``str``): Track genre or an empty string if none
-          - ``title`` (``str``): Track title or an empty string if none
+          - ``artist`` (``str``): Artist name or an empty string if unknown
+          - ``year`` (``int``): Track year or an empty string if unknown
+          - ``filename`` (``str``): Pathto the track or URL to the stream
+          - ``genre`` (``str``): Track genre or an empty string if unknown
+          - ``title`` (``str``): Track title or an empty string if unknown
 
         .. warning::
 
@@ -224,7 +224,7 @@ class Client:
 
         meta_data_unpacked = dict(zip(AIMPRemoteAccessPackFormat.keys(), struct.unpack(pack_format, meta_data_raw)))
 
-        track_data = mapped_file.readline().decode().replace('\x00', '')
+        track_data = mapped_file.read(mapped_file.size() - mapped_file.tell()).decode().replace('\x00', '')
 
         mapped_file.close()
 
