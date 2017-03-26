@@ -5,7 +5,7 @@ Welcome! This documentation is about PyAIMP, a Python `AIMP <http://www.aimp.ru/
 
 |pyversion| |pypiv| |pypil|
 
-PyAIMP comes as a simple Python module that covers 100% of the AIMP remote API features with the help of `pywin32 <https://pypi.python.org/pypi/pypiwin32>`_ (the only dependency).
+PyAIMP comes as a simple Python module that covers the main features of the AIMP remote API features with the help of `pywin32 <https://pypi.python.org/pypi/pypiwin32>`_ (the only dependency).
 
 Prerequisites
 -------------
@@ -59,7 +59,8 @@ Continue reading to know about what you can do.
 
 .. note::
 
-   Events are not yet supported.
+   - Events aren't supported
+   - The album image retrieving isn't support too. I tried, but it's way too hard/tricky
 
 API docs
 --------

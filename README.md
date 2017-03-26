@@ -4,7 +4,7 @@ Python [AIMP](http://www.aimp.ru/) remote API wrapper with some extras.
 
 ![Python versions](https://img.shields.io/pypi/pyversions/pyaimp.svg?link=https://pypi.python.org/pypi/pyaimp) ![Version](https://img.shields.io/pypi/v/pyaimp.svg?link=https://pypi.python.org/pypi/pyaimp) ![License](https://img.shields.io/pypi/l/pyaimp.svg?link=https://pypi.python.org/pypi/pyaimp?link=https://github.com/EpocDotFr/pyaimp/blob/master/LICENSE.md)
 
-PyAIMP comes as a simple Python module that covers 100% of the AIMP remote API features with the help of [pywin32](https://pypi.python.org/pypi/pypiwin32) (the only dependency).
+PyAIMP comes as a simple Python module that covers the main features of the AIMP remote API features with the help of [pywin32](https://pypi.python.org/pypi/pypiwin32) (the only dependency).
 
 ## Documentation
 

@@ -2,18 +2,14 @@ from mmapfile import mmapfile
 from enum import Enum
 from collections import OrderedDict
 import struct
-import threading
 import win32gui
 import win32api
 import win32con
 import win32process
-import ctypes
-import ctypes.wintypes
-import time
 import io
 import subprocess
 
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 __all__ = [
     'PlayBackState',
@@ -95,76 +91,6 @@ AIMP_RA_CMD_OPEN_PLAYLISTS = AIMP_RA_CMD_BASE + 18
 AIMP_RA_CMD_GET_ALBUMART = AIMP_RA_CMD_BASE + 19
 AIMP_RA_CMD_VISUAL_START = AIMP_RA_CMD_BASE + 20
 AIMP_RA_CMD_VISUAL_STOP = AIMP_RA_CMD_BASE + 21
-
-# -----------------------------------------------------
-# Events
-
-AIMP_RA_NOTIFY_BASE = 0
-
-AIMP_RA_NOTIFY_TRACK_INFO = AIMP_RA_NOTIFY_BASE + 1
-AIMP_RA_NOTIFY_TRACK_START = AIMP_RA_NOTIFY_BASE + 2
-AIMP_RA_NOTIFY_PROPERTY = AIMP_RA_NOTIFY_BASE + 3
-
-
-# -----------------------------------------------------
-
-
-class AlbumImageCopyData(ctypes.Structure):
-    _fields_ = [
-        ('dwData', ctypes.wintypes.DWORD),
-        ('cbData', ctypes.wintypes.DWORD),
-        ('lpData', ctypes.c_void_p)
-    ]
-
-PAlbumImageCopyData = ctypes.POINTER(AlbumImageCopyData)
-
-
-# -----------------------------------------------------
-
-
-class AlbumImageInternalWindow(threading.Thread):
-    def _handle_wm_copydata(self, hwnd, msg, wparam, lparam):
-        self.image = None
-
-        album_image_copy_data = ctypes.cast(lparam, PAlbumImageCopyData)
-
-        if album_image_copy_data.contents.dwData != WM_AIMP_COPYDATA_ALBUMART_ID:
-            self.stop()
-        else:
-            image_data = ctypes.wstring_at(album_image_copy_data.contents.lpData, album_image_copy_data.contents.cbData) # TODO
-
-            self.image = image_data
-
-        self.stop()
-
-    def run(self):
-        wc = win32gui.WNDCLASS()
-        wc.lpszClassName = 'pyaimp'
-        wc.lpfnWndProc = {
-            win32con.WM_COPYDATA: self._handle_wm_copydata
-        }
-
-        hinstance = wc.hInstance = win32api.GetModuleHandle(None)
-        class_name = win32gui.RegisterClass(wc)
-
-        self.hwnd = win32gui.CreateWindow(
-            class_name,
-            'PyAIMP ' + __version__,
-            0,
-            0,
-            0,
-            win32con.CW_USEDEFAULT,
-            win32con.CW_USEDEFAULT,
-            0,
-            0,
-            hinstance,
-            None
-        )
-
-        win32gui.PumpMessages()
-
-    def stop(self):
-        win32api.PostQuitMessage()
 
 
 # -----------------------------------------------------
@@ -604,32 +530,6 @@ class Client:
         :rtype: None
         """
         self._send_command(AIMP_RA_CMD_VISUAL_STOP)
-
-    def get_album_image(self):
-        """Return the binary data of the album image of the current active track or ``None`` if... there's none.
-
-        .. warning::
-
-           This method is WIP and is unusable at this moment.
-
-        :rtype: bytes or None
-        """
-        album_image_internal_window = AlbumImageInternalWindow()
-        album_image_internal_window.start()
-
-        time.sleep(0.5) # FIXME Temp because the below line runs before the thread even start
-
-        res = self._send_command(AIMP_RA_CMD_GET_ALBUMART, album_image_internal_window.hwnd)
-
-        if not res:
-            return None
-
-        return album_image_internal_window.image
-
-    # -----------------------------------------------------
-    # Events
-
-    # TODO
 
     # -----------------------------------------------------
     # CLI commands
