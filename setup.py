@@ -19,5 +19,8 @@ setup(
     ],
     keywords='aimp remote api wrapper client',
     py_modules=['pyaimp'],
+    install_requires=[
+      'pypiwin32',
+    ],
     download_url='https://github.com/EpocDotFr/pyaimp/archive/pyaimp-{version}.tar.gz'.format(version=pyaimp.__version__)
 )
