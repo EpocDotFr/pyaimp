@@ -190,10 +190,10 @@ class Client:
 
           - ``bit_rate`` (``int``): `Audio bit rate <https://en.wikipedia.org/wiki/Bit_rate#Encoding_bit_rate>`_
           - ``channels`` (``int``): Number of `audio channels <https://en.wikipedia.org/wiki/Audio_signal>`_
-          - ``duration`` (``int``): Duration of the track, in milliseconds. `0` if unknown or none (i.e a stream)
-          - ``file_size`` (``int``): Size of the file, in bytes. `0` if unknown or none (i.e a stream)
+          - ``duration`` (``int``): Duration of the track, in milliseconds. ``0`` if unknown or none (i.e a stream)
+          - ``file_size`` (``int``): Size of the file, in bytes. ``0`` if unknown or none (i.e a stream)
           - ``file_mark`` (``int``): Unknown
-          - ``track_number`` (``int``): Track number (as stored in the audio tags). `0` if unknown
+          - ``track_number`` (``int``): Track number (as stored in the audio tags). ``0`` if unknown
           - ``sample_rate`` (``int``): `Audio sample rate <https://en.wikipedia.org/wiki/Sampling_(signal_processing)#Sampling_rate>`_
           - ``album`` (``str``): Album name or an empty string if none
           - ``artist`` (``str``): Artist name or an empty string if unknown
