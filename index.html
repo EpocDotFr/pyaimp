@@ -93,7 +93,7 @@
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <ul class="last simple">
-<li>Events aren&#8217;t supported.</li>
+<li>AIMP events aren&#8217;t supported.</li>
 <li>The album image retrieving isn&#8217;t supported, too. I tried, but it&#8217;s way too hard/tricky to implement.</li>
 </ul>
 </div>
@@ -134,7 +134,7 @@ handle using <a class="reference internal" href="#pyaimp.Client.detect_aimp" tit
 exception will be raised.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Consider all methods in this class to be <strong>blocking</strong>.</p>
+<p class="last">Consider all methods in this class to be <strong>blocking</strong> and <strong>non-thread safe</strong>.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -344,10 +344,10 @@ same instance anymore.</p>
 <div><ul class="simple">
 <li><code class="docutils literal"><span class="pre">bit_rate</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): <a class="reference external" href="https://en.wikipedia.org/wiki/Bit_rate#Encoding_bit_rate">Audio bit rate</a></li>
 <li><code class="docutils literal"><span class="pre">channels</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Number of <a class="reference external" href="https://en.wikipedia.org/wiki/Audio_signal">audio channels</a></li>
-<li><code class="docutils literal"><span class="pre">duration</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Duration of the track, in milliseconds. <cite>0</cite> if unknown or none (i.e a stream)</li>
-<li><code class="docutils literal"><span class="pre">file_size</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Size of the file, in bytes. <cite>0</cite> if unknown or none (i.e a stream)</li>
+<li><code class="docutils literal"><span class="pre">duration</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Duration of the track, in milliseconds. <code class="docutils literal"><span class="pre">0</span></code> if unknown or none (i.e a stream)</li>
+<li><code class="docutils literal"><span class="pre">file_size</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Size of the file, in bytes. <code class="docutils literal"><span class="pre">0</span></code> if unknown or none (i.e a stream)</li>
 <li><code class="docutils literal"><span class="pre">file_mark</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Unknown</li>
-<li><code class="docutils literal"><span class="pre">track_number</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Track number (as stored in the audio tags). <cite>0</cite> if unknown</li>
+<li><code class="docutils literal"><span class="pre">track_number</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): Track number (as stored in the audio tags). <code class="docutils literal"><span class="pre">0</span></code> if unknown</li>
 <li><code class="docutils literal"><span class="pre">sample_rate</span></code> (<code class="docutils literal"><span class="pre">int</span></code>): <a class="reference external" href="https://en.wikipedia.org/wiki/Sampling_(signal_processing)#Sampling_rate">Audio sample rate</a></li>
 <li><code class="docutils literal"><span class="pre">album</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): Album name or an empty string if none</li>
 <li><code class="docutils literal"><span class="pre">artist</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): Artist name or an empty string if unknown</li>
