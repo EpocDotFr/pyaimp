@@ -59,7 +59,7 @@ Continue reading to know about what you can do.
 
 .. note::
 
-   - Events aren't supported.
+   - AIMP events aren't supported.
    - The album image retrieving isn't supported, too. I tried, but it's way too hard/tricky to implement.
 
 API docs

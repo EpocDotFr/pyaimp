@@ -108,7 +108,7 @@ class Client:
 
     .. note::
 
-       Consider all methods in this class to be **blocking**.
+       Consider all methods in this class to be **blocking** and **non-thread safe**.
 
     :raises RuntimeError: The AIMP window cannot be found.
     """
