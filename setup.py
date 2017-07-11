@@ -14,6 +14,7 @@ setup(
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries',
+        'Programming Language :: Python',
         'Programming Language :: Python :: 3.5',
         'Operating System :: Microsoft :: Windows'
     ],
