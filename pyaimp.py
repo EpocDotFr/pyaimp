@@ -217,7 +217,7 @@ class Client:
 
         meta_data_unpacked = dict(zip(AIMPRemoteAccessPackFormat.keys(), struct.unpack(pack_format, meta_data_raw)))
 
-        track_data = mapped_file.read(mapped_file.size() - mapped_file.tell()).decode().replace('\x00', '')
+        track_data = mapped_file.read(mapped_file.size() - mapped_file.tell()).decode('UTF-16').replace('\x00', '')
 
         mapped_file.close()
 
