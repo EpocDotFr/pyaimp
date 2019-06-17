@@ -202,10 +202,6 @@ class Client:
           - ``genre`` (``str``): Track genre or an empty string if unknown
           - ``title`` (``str``): Track title or an empty string if unknown
 
-        .. warning::
-
-           This method is experimental and should be used with caution. See `this issue <https://github.com/EpocDotFr/pyaimp/issues/1>`_ for more information.
-
         :rtype: dict
         """
 
